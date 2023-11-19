@@ -11,4 +11,5 @@ public class AdDto {
     private int price;
     private String title;
 
+
 }
