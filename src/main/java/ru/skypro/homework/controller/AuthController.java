@@ -41,7 +41,6 @@ public class AuthController {
                     )
             )
     })
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
         if (authService.login(loginDto.getUsername(), loginDto.getPassword())) {
