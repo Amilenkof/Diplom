@@ -4,7 +4,6 @@ import lombok.Data;
 import ru.skypro.homework.model.Role;
 
 @Data
-
 public class RegisterDto {
 
     private String username;
