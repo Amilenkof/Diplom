@@ -8,7 +8,7 @@ import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entity.User;
-import ru.skypro.homework.exception.IncorrectPasswordException;
+import ru.skypro.homework.exception.UncorrectPassException;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.security.SecurityUtils;
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             return;
         }
-        throw new IncorrectPasswordException("некорректный пароль");
+        throw new UncorrectPassException("некорректный пароль");
     }
 
     @Override
