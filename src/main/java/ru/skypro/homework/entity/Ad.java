@@ -22,7 +22,8 @@ public class Ad {
 
     private String title;
 
-    private String image;
+    @OneToOne
+    private Image image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")

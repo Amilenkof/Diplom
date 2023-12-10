@@ -14,6 +14,9 @@ import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.security.UserDetailsServiceImpl;
 import ru.skypro.homework.service.AuthService;
 
+import javax.validation.constraints.NotNull;
+
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -25,9 +28,9 @@ public class AuthServiceImpl implements AuthService {
     private final UserMapper userMapper;
 
     @Override
-    public boolean login(String userName, String password) {
+    public boolean login(@NotNull String userName,
+                         @NotNull String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-
         if (encoder.matches(password, userDetails.getPassword())) {
             return true;
         }
@@ -37,11 +40,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean register(RegisterDto registerDto) {
         User user = userMapper.toEntity(registerDto);
-
         if (userRepository.existsUserByEmailIgnoreCase(user.getEmail())) {
-            throw new UserAlreadyBusyException(String.format("Указанный пользователь уже используется \"%s\" ", user.getEmail()));
+            throw new UserAlreadyBusyException(String.format("Пользователь \"%s\" уже существует!", user.getEmail()));
         }
-
         user.setPassword(encoder.encode(registerDto.getPassword()));
         userRepository.save(user);
 

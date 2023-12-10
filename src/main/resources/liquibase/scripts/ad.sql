@@ -8,7 +8,7 @@ CREATE TABLE ad
     description varchar(255),
     price       INT,
     title       VARCHAR(255),
-    image       VARCHAR(255),
-    author_id   BIGINT,
-    FOREIGN KEY (author_id) REFERENCES users (id)
+    image_id   bigint references image (id),
+    author_id   BIGINT REFERENCES users(id)
+
 );

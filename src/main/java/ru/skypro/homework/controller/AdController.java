@@ -7,26 +7,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.AdService;
+import ru.skypro.homework.service.ImageService;
 
-@Slf4j
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/ads")
 @CrossOrigin(value = "http://localhost:3000")
-public class AdsController {
+public class AdController {
 
     private final AdService adService;
+    private final ImageService imageService;
 
-    @Operation(summary = "Получить все объявления", description = "getAllAds", tags = {"Объявления"})
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -38,12 +37,11 @@ public class AdsController {
             )
     })
     @GetMapping
-    @Secured("")
+    @Operation(summary = "Получить все объявления", description = "getAllAds", tags = {"Объявления"})
     public ResponseEntity<AdsDto> getAllAds() {
         return ResponseEntity.ok(adService.getAllAds());
     }
 
-    @Operation(summary = "Добавление объявления", description = "addAd", tags = {"Объявления"})
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -61,13 +59,13 @@ public class AdsController {
             )
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Добавление объявления", description = "addAd", tags = {"Объявления"})
     public ResponseEntity<AdDto> addAd(@RequestPart("image") MultipartFile image,
                                        @RequestPart("properties") CreateOrUpdateAdDto createOrUpdateAdDto,
                                        Authentication authentication) {
-        return ResponseEntity.ok(adService.addAd(createOrUpdateAdDto, authentication));
+        return ResponseEntity.ok(adService.addAd(image, createOrUpdateAdDto, authentication));
     }
 
-    @Operation(summary = "Получение информации об объявлении", description = "getAd", tags = {"Объявления"})
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -91,11 +89,11 @@ public class AdsController {
             )
     })
     @GetMapping("/{id}")
+    @Operation(summary = "Получение информации об объявлении", description = "getAd", tags = {"Объявления"})
     public ResponseEntity<ExtendedAdDto> getAd(@Parameter(description = "ID объявления") @PathVariable long id) {
         return ResponseEntity.ok(adService.getAd(id));
     }
 
-    @Operation(summary = "Удаление объявления", description = "deleteAd", tags = {"Объявления"})
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -123,13 +121,13 @@ public class AdsController {
             )
     })
     @DeleteMapping("/{id}")
+    @Operation(summary = "Удаление объявления", description = "deleteAd", tags = {"Объявления"})
     public ResponseEntity<Void> deleteAd(@Parameter(description = "ID объявления") @PathVariable long id,
                                          Authentication authentication) {
         adService.deleteAd(id, authentication);
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Обновление информации об объявлении", description = "updateInfoAd", tags = {"Объявления"})
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -159,13 +157,13 @@ public class AdsController {
             )
     })
     @PatchMapping("/{id}")
+    @Operation(summary = "Обновление информации об объявлении", description = "updateInfoAd", tags = {"Объявления"})
     public ResponseEntity<AdDto> updateInfoAd(@Parameter(description = "ID объявления") @PathVariable long id,
                                               @RequestBody CreateOrUpdateAdDto createOrUpdateAdDto,
                                               Authentication authentication) {
         return ResponseEntity.ok(adService.updateInfoAd(id, createOrUpdateAdDto, authentication));
     }
 
-    @Operation(summary = "Получение объявлений авторизованного пользователя", description = "getAdsMe", tags = {"Объявления"})
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -183,11 +181,11 @@ public class AdsController {
             )
     })
     @GetMapping("/me")
+    @Operation(summary = "Получение объявлений авторизованного пользователя", description = "getAdsMe", tags = {"Объявления"})
     public ResponseEntity<AdsDto> getAdsMe(Authentication authentication) {
         return ResponseEntity.ok(adService.getAdsMe(authentication));
     }
 
-    @Operation(summary = "Обновление картинки объявления", description = "updateImageAd", tags = {"Объявления"})
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -215,9 +213,20 @@ public class AdsController {
             )
     })
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> updateImageAd(@Parameter(description = "ID объявления") @PathVariable long id,
-                                              @RequestBody MultipartFile multipartFile) {
+    @Operation(summary = "Обновление картинки объявления", description = "updateImageAd", tags = {"Объявления"})
+    public ResponseEntity<?> updateImageAd(@Parameter(description = "ID объявления") @PathVariable("id") long id,
+                                           @RequestPart("image") MultipartFile image,
+                                           Authentication authentication) {
+        adService.updateImageAd(id, image, authentication);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE,
+            MediaType.IMAGE_JPEG_VALUE,
+            MediaType.IMAGE_GIF_VALUE})
+    @Operation(summary = "Получение картинки объявления", description = "getAdsImage", tags = {"Объявления"})
+    public ResponseEntity<byte[]> getAdsImage(@PathVariable long id) {
+        return ResponseEntity.ok(imageService.getImage(id).getData());
     }
 
 }

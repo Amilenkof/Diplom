@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,7 +16,6 @@ import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.service.CommentService;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/ads")
@@ -26,7 +24,6 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @Operation(summary = "Получение комментариев объявления", description = "getComments", tags = {"Комментарии"})
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -50,11 +47,11 @@ public class CommentController {
             )
     })
     @GetMapping("/{id}/comments")
+    @Operation(summary = "Получение комментариев объявления", description = "getComments", tags = {"Комментарии"})
     public ResponseEntity<CommentsDto> getComments(@Parameter(description = "ID объявления") @PathVariable long id) {
         return ResponseEntity.ok(commentService.getComments(id));
     }
 
-    @Operation(summary = "Добавление комментария к объявлению", description = "addComment", tags = {"Комментарии"})
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -78,13 +75,13 @@ public class CommentController {
             )
     })
     @PostMapping("/{id}/comments")
+    @Operation(summary = "Добавление комментария к объявлению", description = "addComment", tags = {"Комментарии"})
     public ResponseEntity<CommentDto> addComment(@Parameter(description = "ID объявления") @PathVariable long id,
                                                  @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto,
                                                  Authentication authentication) {
         return ResponseEntity.ok(commentService.addComment(id, createOrUpdateCommentDto, authentication));
     }
 
-    @Operation(summary = "Удаление комментария", description = "deleteComment", tags = {"Комментарии"})
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -112,6 +109,7 @@ public class CommentController {
             )
     })
     @DeleteMapping("/{adId}/comments/{commentId}")
+    @Operation(summary = "Удаление комментария", description = "deleteComment", tags = {"Комментарии"})
     public ResponseEntity<Void> deleteComment(@Parameter(description = "ID объявления") @PathVariable long adId,
                                               @Parameter(description = "ID комментария") @PathVariable long commentId,
                                               Authentication authentication) {
@@ -119,7 +117,6 @@ public class CommentController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Обновление комментария", description = "updateComment", tags = {"Комментарии"})
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -149,6 +146,7 @@ public class CommentController {
             )
     })
     @PatchMapping("/{adId}/comments/{commentId}")
+    @Operation(summary = "Обновление комментария", description = "updateComment", tags = {"Комментарии"})
     public ResponseEntity<CommentDto> updateComment(@Parameter(description = "ID объявления") @PathVariable long adId,
                                                     @Parameter(description = "ID комментария") @PathVariable long commentId,
                                                     @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto,
