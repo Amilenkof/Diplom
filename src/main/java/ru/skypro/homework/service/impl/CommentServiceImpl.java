@@ -41,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setText(createOrUpdateCommentDto.getText());
         comment.setAd(ad);
         comment.setCreatedAt(LocalDateTime.now());
-        comment.setAuthor(SecurityUtils.getCurrentUser(authentication.getName()));
+        comment.setAuthor(SecurityUtils.INSTANCE.getCurrentUser(authentication.getName()));
         commentRepository.save(comment);
         return commentMapper.toDto(comment);
     }

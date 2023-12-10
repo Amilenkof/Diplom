@@ -48,7 +48,7 @@ public class AdServiceImpl implements AdService {
                        CreateOrUpdateAdDto createOrUpdateAdDto,
                        Authentication authentication) {
         Ad ad = adMapper.toEntity(createOrUpdateAdDto);
-        User user = SecurityUtils.getCurrentUser(authentication.getName());
+        User user = SecurityUtils.INSTANCE.getCurrentUser(authentication.getName());
         ad.setAuthor(user);
         ad.setImage(imageService.uploadImage(image));
         adRepository.save(ad);
@@ -57,7 +57,7 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public AdsDto getAdsMe(Authentication authentication) {
-        User user = SecurityUtils.getCurrentUser(authentication.getName());
+        User user = SecurityUtils.INSTANCE.getCurrentUser(authentication.getName());
         List<Ad> adList = adRepository.findAdByAuthorId(user.getId());
         return mapAdsDto(adList);
     }

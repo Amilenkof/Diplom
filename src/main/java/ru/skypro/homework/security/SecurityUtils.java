@@ -11,8 +11,9 @@ import ru.skypro.homework.entity.User;
  * Утилитарный класс для работы с Security
  */
 @Slf4j
-@RequiredArgsConstructor
+
 public class SecurityUtils {
+    public static final SecurityUtils INSTANCE = new SecurityUtils();
 
     /**
      * Метод для получения сущности User аутентифицированного пользователя
@@ -20,7 +21,7 @@ public class SecurityUtils {
      * @return объект User
      * @throws UsernameNotFoundException - Неавторизованный пользователь
      */
-    public static User getCurrentUser(String username) throws UsernameNotFoundException {
+    public  User getCurrentUser(String username) throws UsernameNotFoundException {
         Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getName().equals(username)) {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
