@@ -13,7 +13,7 @@ import ru.skypro.homework.entity.User;
 @Slf4j
 
 public class SecurityUtils {
-    public static final SecurityUtils INSTANCE = new SecurityUtils();
+
 
     /**
      * Метод для получения сущности User аутентифицированного пользователя

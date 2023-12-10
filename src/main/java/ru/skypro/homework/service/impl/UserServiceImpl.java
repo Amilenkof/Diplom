@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void setPassword(NewPasswordDto newPasswordDto,
                             Authentication authentication) {
-        User user = SecurityUtils.INSTANCE.getCurrentUser(authentication.getName());
+        User user = new SecurityUtils().getCurrentUser(authentication.getName());
         if (encoder.matches(newPasswordDto.getCurrentPassword(), user.getPassword())) {
             user.setPassword(encoder.encode(newPasswordDto.getNewPassword()));
             userRepository.save(user);
@@ -42,14 +42,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getInfoUser(Authentication authentication) {
-        User user = SecurityUtils.INSTANCE.getCurrentUser(authentication.getName());
+        User user = new SecurityUtils().getCurrentUser(authentication.getName());
         return userMapper.toDto(user);
     }
 
     @Override
     public UpdateUserDto updateInfoUser(UpdateUserDto updateUserDto,
                                         Authentication authentication) {
-        User user = SecurityUtils.INSTANCE.getCurrentUser(authentication.getName());
+        User user = new SecurityUtils().getCurrentUser(authentication.getName());
         user.setFirstName(updateUserDto.getFirstName());
         user.setLastName(updateUserDto.getLastName());
         user.setPhone(updateUserDto.getPhone());
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateAvatarUser(MultipartFile imageFile,
                                  Authentication authentication) {
-        User user = SecurityUtils.INSTANCE.getCurrentUser(authentication.getName());
+        User user = new SecurityUtils().getCurrentUser(authentication.getName());
         Image image = user.getImage();
         user.setImage(imageService.uploadImage(imageFile));
         if (image != null) {

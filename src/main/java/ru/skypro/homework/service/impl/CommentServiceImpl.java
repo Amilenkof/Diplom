@@ -11,6 +11,7 @@ import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.entity.Comment;
+import ru.skypro.homework.entity.User;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.CommentRepository;
@@ -41,7 +42,8 @@ public class CommentServiceImpl implements CommentService {
         comment.setText(createOrUpdateCommentDto.getText());
         comment.setAd(ad);
         comment.setCreatedAt(LocalDateTime.now());
-        comment.setAuthor(SecurityUtils.INSTANCE.getCurrentUser(authentication.getName()));
+        User user = new SecurityUtils().getCurrentUser(authentication.getName());
+        comment.setAuthor(user);
         commentRepository.save(comment);
         return commentMapper.toDto(comment);
     }
