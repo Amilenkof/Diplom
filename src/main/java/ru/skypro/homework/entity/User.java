@@ -1,8 +1,7 @@
 package ru.skypro.homework.entity;
 
 import lombok.*;
-import ru.skypro.homework.model.Role;
-
+import ru.skypro.homework.dto.Role;
 
 import javax.persistence.*;
 
@@ -18,12 +17,19 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     private String firstName;
+
     private String lastName;
+
     private String email;
+
     private String password;
+
     private String phone;
-    private String image;
+
+    @OneToOne
+    private Image image;
 
     @Enumerated(EnumType.STRING)
     private Role role;

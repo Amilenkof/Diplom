@@ -16,16 +16,19 @@ public class UserDetailsImpl implements UserDetails {
     @Getter
     private final User user;
 
+    // Передает роли
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().toString()));
     }
 
+    // Передает пароль
     @Override
     public String getPassword() {
         return user.getPassword();
     }
 
+    // Передает логин
     @Override
     public String getUsername() {
         return user.getEmail();

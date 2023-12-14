@@ -1,12 +1,12 @@
 package ru.skypro.homework.dto;
 
 import lombok.Data;
-import lombok.ToString;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
-@ToString
 public class CommentDto {
 
     private long author;
@@ -14,6 +14,8 @@ public class CommentDto {
     private String authorFirstName;
     private LocalDateTime createdAt;
     private long pk;
+    @NotBlank
+    @Size(min = 8)
     private String text;
 
 }
