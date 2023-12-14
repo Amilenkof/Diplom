@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -14,6 +16,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableWebSecurity
+@EnableMethodSecurity
 public class WebSecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
@@ -37,7 +41,7 @@ public class WebSecurityConfig {
                                 authorization
                                         .antMatchers(HttpMethod.OPTIONS).permitAll()
                                         .mvcMatchers(AUTH_WHITELIST).permitAll()
-                                        .antMatchers(HttpMethod.GET, "/ads").permitAll()
+                                        .antMatchers(HttpMethod.GET, "/ads", "/ads/image/**", "/users/image/**").permitAll()
                                         .mvcMatchers("/ads/**", "/users/**").authenticated()
                 )
                 .cors()

@@ -2,8 +2,10 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 import ru.skypro.homework.dto.CommentDto;
@@ -61,25 +63,32 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('ADMIN') or @commentRepository.findById(#idComment).get().getAuthor().getEmail() == #authentication.name")
     public void deleteComment(long idAd,
                               long idComment,
                               Authentication authentication) {
         Comment comment = commentRepository.findById(idComment).orElseThrow(() ->
                 new NotFoundException("Комментарий с ID" + idComment + "не найден"));
+        checkPermit(comment, authentication);
         commentRepository.delete(comment);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("hasAuthority('ADMIN') or @commentRepository.findById(#idComment).get().getAuthor().getEmail() == #authentication.name")
     public CommentDto updateComment(long idAd,
                                     long idComment,
                                     CreateOrUpdateCommentDto createOrUpdateCommentDto,
                                     Authentication authentication) {
         Comment comment = commentRepository.findById(idComment).orElseThrow(() ->
                 new NotFoundException("Комментарий с ID" + idComment + "не найден"));
+        checkPermit(comment, authentication);
         comment.setText(createOrUpdateCommentDto.getText());
         return commentMapper.toDto(commentRepository.save(comment));
     }
+
+    public void checkPermit(Comment comment, Authentication authentication) {
+        if (!comment.getAuthor().getEmail().equals(authentication.getName()) && !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+            throw new AccessDeniedException("Вы не можете редактировать или удалять чужое объявление");
+        }
+    }
+
 }
